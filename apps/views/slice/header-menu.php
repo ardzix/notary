@@ -160,7 +160,7 @@ if ($this->session->flashdata('delete')) {
         <div class="user">
             <img src="<?= NOTARY_ASSETS ?>img/examples/users/Muhammad Arif Fathurohman.jpg" align="left"/>
             <a href="#" class="name">
-                <span><?
+                <span><?php
                     $username = $this->model_core->get_where_array('user', array('USERID' => $this->session->userdata('USERID')));
                     if ($username['USERNAME'] == null) {
                     echo '';

@@ -128,15 +128,20 @@
                                         <div class="row-form">
                                             <div class="span2">Dari Tanggal:</div>
                                             <div class="span3">                                                            
-                                                <input type="text" value="" name="tgldari" id="dp1" />
+                                                <input type="text" value="" name="tgldari" id="dp1" class="dp1" />
                                             </div>
                                             <div class="span2">Sampai Tanggal:</div>
                                             <div class="span3">                                                            
-                                                <input type="text" value="" name="tglke" id="dp" />
+                                                <input type="text" value="" name="tglke" id="dp" class="dp1" />
                                             </div>
-                                            <div class="span2"><button class="btn" type="submit">Cari</button></div>
-                                            <div class="span3">    
-                                            </div>  
+                                        </div>
+                                        
+                                        <div class="row-form">
+                                            <div class="span2">Kata Kunci:</div>
+                                            <div class="span7">                                                            
+                                                <input type="text" value="" name="keyword" id="dp" class="dp1" />
+                                            </div>
+                                            <div class="span1"><button class="btn" type="submit">Cari</button></div>
                                         </div>
                                     </div>
                                 </form> 

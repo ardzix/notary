@@ -1110,9 +1110,10 @@ class Edit extends CI_Controller {
     public function monitoring_filter() {
         $tgldari = date('Y-m-d', strtotime($this->input->post('tgldari')));
         $tglke = date('Y-m-d', strtotime($this->input->post('tglke')));
+        $keyword = $this->input->post('keyword');
 
         $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
-        $data['monitoring'] = $this->model_core->monitoring_filter($tgldari, $tglke);
+        $data['monitoring'] = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
 
         $this->load->view('proses/pasca_realisasi_monitoring_filter', $data);
     }

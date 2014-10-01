@@ -372,7 +372,13 @@ class Model_core extends CI_Model {
         return $qry->result();
     }
     
-    function monitoring_filter($param1, $param2){
+    function monitoring_filter($param1, $param2,$param3 =''){
+        
+        if($param2=='1970-01-01')
+            $tglAkadWhere = '';
+        else
+            $tglAkadWhere = 'TGLAKAD BETWEEN "'.$param1.'" AND  "'.$param2.'"  AND';
+        
         $qry = $this->db->query('SELECT transaksipra.TRANSAKSIPRAID, '
                 . 'NOCOVERNOTE, covernote.TGLSELESAI AS TGLSELESAI_COVERNOTE, '
                 . 'CUSTOMERID, DEVELOPERID, BANKREKID, transaksipra.EMPLOYEEID, AKTAID, '
@@ -385,7 +391,23 @@ class Model_core extends CI_Model {
                 . 'JOIN aktatran ON aktatran.TRANSAKSIPRAID=transaksipra.TRANSAKSIPRAID '
                 . 'LEFT JOIN prosestran ON prosestran.AKTATRANID=aktatran.AKTATRANID '
                 . 'LEFT JOIN aktasertifikat ON aktasertifikat.AKTATRANID=aktatran.AKTATRANID '
-                . 'WHERE TGLAKAD >= '.$param1.' AND TGLAKAD <= '.$param2
+                . 'WHERE '
+                . $tglAkadWhere
+                . ' ( transaksipra.TRANSAKSIPRAID LIKE "%'.$param3.'%" OR '
+                . 'NOCOVERNOTE LIKE "%'.$param3.'%" OR '
+//                . 'covernote.TGLSELESAI LIKE "%'.$param3.'%" OR '
+//                . 'CUSTOMERID LIKE "%'.$param3.'%" OR '
+//                . 'DEVELOPERID LIKE "%'.$param3.'%" OR '
+//                . 'BANKREKID LIKE "%'.$param3.'%" OR '
+                . 'transaksipra.EMPLOYEEID LIKE "%'.$param3.'%" OR '
+//                . 'AKTAID LIKE "%'.$param3.'%" OR '
+//                . 'PROSESID LIKE "%'.$param3.'%" OR '
+                . 'STATUSPROSES LIKE "%'.$param3.'%" OR '
+//                . 'prosestran.TGLMASUK LIKE "%'.$param3.'%" OR '
+//                . 'prosestran.TGLDEADLINE LIKE "%'.$param3.'%" OR '
+//                . 'aktatran.AKTATRANID LIKE "%'.$param3.'%" OR '
+                . 'NOAKTA LIKE "%'.$param3.'%" OR '
+                . 'SERTIFIKATID LIKE "%'.$param3.'%" )'
                 . ' ORDER BY TANGGALPRA DESC');
 
         return $qry->result();
