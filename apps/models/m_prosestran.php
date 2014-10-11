@@ -117,6 +117,14 @@ class m_prosestran extends CI_Model {
         $this->db->update($this->table, $data);
     }
 
+    function getProsestranByTransaksi($transaksiId) {
+        $hasil = $this->db->query('SELECT prosestran.* FROM transaksipra '.
+            'JOIN aktatran ON aktatran.TRANSAKSIPRAID = transaksipra.TRANSAKSIPRAID '.
+            'JOIN prosestran ON prosestran.AKTATRANID = aktatran.AKTATRANID '.
+            'where transaksipra.TRANSAKSIPRAID = '.$transaksiId)->result();
+        return $hasil;
+    }
+
 }
 
 ?>

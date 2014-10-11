@@ -41,6 +41,11 @@ class m_customer extends CI_Model
 	$hasil=$this->db->get($this->table)->num_rows();
 	return $hasil;
 	}
+
+	function getCust($transaksipraid){
+		$hasil = $this->db->query('SELECT CUSTOMERID FROM customertrans WHERE TRANSAKSIPRAID = '.$transaksipraid)->result();
+		return $hasil;
+	}
 	
 	
 }

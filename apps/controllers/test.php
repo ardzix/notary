@@ -115,4 +115,18 @@ class Test extends CI_Controller {
         $this->pdf->stream("Test.pdf");
     }
 
+    public function cek(){
+        $table = 'employee';
+        $join = array(array('jabatan', 'jabatan.JABATANID', 'employee.JABATANID'));
+        $field = array('employee.EMPLOYEEID', 'employee.NAMALENGKAP');
+        $where = array(array('jabatan.GRUP', 3));
+        $data['pic'] = $this->model_core->getDataSpecifiedJoin($table, $join, $field, $where);
+
+
+        $where = array(array('jabatan.GRUP', 2));
+        $data['spv'] = $this->model_core->getDataSpecifiedJoin($table, $join, $field, $where);
+        p_code($spv);
+        echo create_option($spv, 2, "EMPLOYEEID", "NAMALENGKAP");
+    }
+
 }

@@ -62,6 +62,13 @@ class m_aktatran extends CI_Model {
         return $hasil;
     }
 
+    function getDataByTransaksiPra($TRANSAKSIPRAID) {
+        $hasil = $this->db->query('SELECT * FROM transaksipra '.
+            'JOIN aktatran ON transaksipra.TRANSAKSIPRAID = aktatran.TRANSAKSIPRAID '.
+            'WHERE transaksipra.TRANSAKSIPRAID = '.$TRANSAKSIPRAID)->result();
+        return $hasil;
+    }
+
 }
 
 ?>

@@ -15,7 +15,7 @@ class Proses extends CI_Controller {
 
         $this->model_core->check_login();
         $this->load->helper(array('form', 'url'));
-        $this->load->model(array('m_bankrekening', 'm_developer', 'm_satuanwaktustd', 'm_aktaproses', 'm_akta', 'm_aktatran', 'm_customertrans', 'm_transaksipra', 'm_customer', 'm_covernote', 'm_bankutama', 'm_tipewilayah', 'm_prosestran', 'm_proses', 'm_statusproses'));
+        $this->load->model(array('m_bankrekening', 'm_developer', 'm_satuanwaktustd', 'm_aktaproses', 'm_akta', 'm_aktatran', 'm_customertrans', 'm_transaksipra', 'm_customer', 'm_covernote', 'm_bankutama', 'm_tipewilayah', 'm_prosestran', 'm_proses', 'm_statusproses', 'm_sertifikat'));
     }
 
     public function index() {
@@ -494,6 +494,67 @@ class Proses extends CI_Controller {
 //            exit;
 
             $this->load->view('proses/pasca_realisasi_updateproses_detail', $data);
+        } elseif ($this->uri->segment(3) == 'monitoring_filter') {
+            $tgldari = date('Y-m-d', strtotime($this->input->post('tgldari')));
+            $tglke = date('Y-m-d', strtotime($this->input->post('tglke')));
+            $keyword = $this->input->post('keyword');
+
+            $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
+            $data['monitoring'] = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
+
+            $this->load->view('proses/pasca_realisasi_monitoring_baru', $data);
+
+        } elseif ($this->uri->segment(3) == 'edit_data') {
+            $idtransaksi = $this->uri->segment(4);
+            $transaksi = $this->m_transaksipra->getDataTransaksiCovernote($idtransaksi);
+
+            if(sizeof($transaksi) > 0){
+
+                //data transaksi
+                $data['trans'] = $transaksi[0];
+                $custid = $this->m_customer->getCust($idtransaksi);
+                $i = 0;
+
+                foreach ($custid as $key) {
+                    $data['selectedcust'][$i] = $key->CUSTOMERID;
+                }
+
+                $data['aktatrans'] = $this->m_aktatran->getDataByTransaksiPra($idtransaksi);
+                $data['sertifikat'] = $this->m_sertifikat->getSertifikatByTransaksi($idtransaksi);
+                $data['prosestran'] = $this->m_prosestran->getProsestranByTransaksi($idtransaksi);
+                
+                //model data
+                $data['title'] = NOTARY_TITLE . 'EDIT DATA';
+                $data['akta'] = $this->model_core->get_data('akta');
+                $data['proses'] = $this->model_core->get_data('proses');
+                $data['pjproses'] = $this->model_core->get_where_result('employee', array('IS_PJ' => "1"));
+                $data['customer'] = $this->model_core->getDataSpecified('customer', array('CUSTOMERID', 'NAMACUST'));
+                $data['stsPajak'] = $this->model_core->getDataSpecified('statuspajak', array('STATUSPJKID', 'STATUSPJKDESC'));
+                $data['bank'] = $this->model_core->getDataSpecified('bankrekening', array('BANKREKID', 'BANKREKDESC'));
+                $data['aktatranId'] = $this->model_core->lastAktatranId();
+                $data['tipeSertifikat'] = $this->model_core->get_data('typesertifikat');
+
+                $table = 'employee';
+                $join = array(array('jabatan', 'jabatan.JABATANID', 'employee.JABATANID'));
+                $field = array('employee.EMPLOYEEID', 'employee.NAMALENGKAP');
+
+                $where = array(array('jabatan.GRUP', 3));
+                $data['pic'] = $this->model_core->getDataSpecifiedJoin($table, $join, $field, $where);
+
+                $where = array(array('jabatan.GRUP', 2));
+                $data['spv'] = $this->model_core->getDataSpecifiedJoin($table, $join, $field, $where);
+                $data['developer'] = $this->model_core->getDataSpecified('developer', array('DEVELOPERID', 'DEVELOPERDESC'));
+                $data['tipecustomer'] = $this->model_core->getDataSpecified('tipecustomer', array('TIPECUSTID', 'TIPECUSTDESC'));
+                $data['satuanwaktu'] = $this->m_satuanwaktustd->getData();
+
+                $where1 = array(array('jabatan.GRUP', 1));
+                $data['notaris'] = $this->model_core->getDataSpecifiedJoin($table, $join, $field, $where1);
+
+                $this->load->view('proses/pasca_realisasi_edit_data', $data);
+            } else {
+                //redirect 404
+            }
+
         } else {
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
             $data['monitoring'] = $this->model_core->monitoring();

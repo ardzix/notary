@@ -55,6 +55,12 @@ class m_transaksipra extends CI_Model
 		return $hasil;
 	}
 
+	function getDataTransaksiCovernote($idtransaksi)
+	{
+		$hasil = $this->db->query('SELECT * FROM covernote JOIN transaksipra ON transaksipra.TRANSAKSIPRAID = covernote.TRANSAKSIPRAID  WHERE transaksipra.TRANSAKSIPRAID = '. $idtransaksi)->result();
+		return $hasil;
+	}
+
 	//detail update proses
 	function getData_akta($id)
 	{

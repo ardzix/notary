@@ -381,22 +381,33 @@ class Model_core extends CI_Model {
         
         $qry = $this->db->query('SELECT transaksipra.TRANSAKSIPRAID, '
                 . 'NOCOVERNOTE, covernote.TGLSELESAI AS TGLSELESAI_COVERNOTE, '
-                . 'CUSTOMERID, DEVELOPERID, BANKREKID, transaksipra.EMPLOYEEID, AKTAID, '
-                . 'PROSESID, STATUSPROSES, prosestran.TGLMASUK, prosestran.TGLDEADLINE, '
+                . 'customer.CUSTOMERID, DEVELOPERID, transaksipra.BANKREKID, transaksipra.EMPLOYEEID, aktatran.AKTAID, '
+                . 'prosestran.PROSESID, STATUSPROSES, prosestran.TGLMASUK, prosestran.TGLDEADLINE, '
                 . 'aktatran.AKTATRANID, NOAKTA, TGLAKAD, NOTARISAKTA,'
                 . 'TGLPENYERAHAN, prosestran.EMPLOYEEID AS PJPROSES, SERTIFIKATID '
                 . 'FROM transaksipra '
                 . 'JOIN covernote ON transaksipra.TRANSAKSIPRAID=covernote.TRANSAKSIPRAID '
                 . 'JOIN customertrans ON customertrans.TRANSAKSIPRAID=transaksipra.TRANSAKSIPRAID '
-                . 'JOIN aktatran ON aktatran.TRANSAKSIPRAID=transaksipra.TRANSAKSIPRAID '
+                . 'JOIN customer ON customertrans.CUSTOMERID = customer.CUSTOMERID '
+                . 'LEFT JOIN employee AS PEMBUATAKTA ON transaksipra.EMPLOYEEID = PEMBUATAKTA.EMPLOYEEID '
+                . 'LEFT JOIN employee AS SUPERVISOR ON transaksipra.SUPERVISOR = SUPERVISOR.EMPLOYEEID '
+                . 'LEFT JOIN aktatran ON aktatran.TRANSAKSIPRAID=transaksipra.TRANSAKSIPRAID '
                 . 'LEFT JOIN prosestran ON prosestran.AKTATRANID=aktatran.AKTATRANID '
+                . 'LEFT JOIN proses ON prosestran.PROSESID = proses.PROSESID '
+                . 'LEFT JOIN kantorproses ON proses.KANTORPROSESID = kantorproses.KANTORPROSESID '
                 . 'LEFT JOIN aktasertifikat ON aktasertifikat.AKTATRANID=aktatran.AKTATRANID '
+                . 'LEFT JOIN employee AS EMPPJPROSES ON EMPPJPROSES.EMPLOYEEID = prosestran.EMPLOYEEID '
+                . 'LEFT JOIN bankrekening ON bankrekening.BANKREKID = transaksipra.BANKREKID '
                 . 'WHERE '
                 . $tglAkadWhere
                 . ' ( transaksipra.TRANSAKSIPRAID LIKE "%'.$param3.'%" OR '
                 . 'NOCOVERNOTE LIKE "%'.$param3.'%" OR '
-//                . 'covernote.TGLSELESAI LIKE "%'.$param3.'%" OR '
-//                . 'CUSTOMERID LIKE "%'.$param3.'%" OR '
+                . 'NAMACUST LIKE "%'.$param3.'%" OR '
+                . 'PEMBUATAKTA.NAMALENGKAP LIKE "%'.$param3.'%" OR '
+                . 'SUPERVISOR.NAMALENGKAP LIKE "%'.$param3.'%" OR '
+                . 'proses.PROSESDESC LIKE "%'.$param3.'%" OR '
+                . 'kantorproses.kantorproses LIKE "%'.$param3.'%" OR '
+                . 'bankrekening.BANKREKDESC LIKE "%'.$param3.'%" OR '
 //                . 'DEVELOPERID LIKE "%'.$param3.'%" OR '
 //                . 'BANKREKID LIKE "%'.$param3.'%" OR '
                 . 'transaksipra.EMPLOYEEID LIKE "%'.$param3.'%" OR '
@@ -409,7 +420,7 @@ class Model_core extends CI_Model {
                 . 'NOAKTA LIKE "%'.$param3.'%" OR '
                 . 'SERTIFIKATID LIKE "%'.$param3.'%" )'
                 . ' ORDER BY TANGGALPRA DESC');
-
+        
         return $qry->result();
     }
     

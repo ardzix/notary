@@ -1077,8 +1077,8 @@ class Edit extends CI_Controller {
     }
 
     public function sertifikat_baru() {
-        p_code($_POST);
-        exit;
+        // p_code($_POST);
+        // exit;
         $data = array(
             'TYPESERTIFIKATID' => $this->input->post('objhukum'),
             'NAMAPENJUAL' => $this->input->post('penjual'),
@@ -1104,18 +1104,20 @@ class Edit extends CI_Controller {
     }
 
     /* ===========================================================================
-     * MONITORING FILTER by Arif
+     * Edit Data By Taufik
      * =========================================================================== */
-
-    public function monitoring_filter() {
-        $tgldari = date('Y-m-d', strtotime($this->input->post('tgldari')));
-        $tglke = date('Y-m-d', strtotime($this->input->post('tglke')));
-        $keyword = $this->input->post('keyword');
-
-        $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
-        $data['monitoring'] = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
-
-        $this->load->view('proses/pasca_realisasi_monitoring_filter', $data);
+    /*
+    *   fungsi edit data transaksi
+    *
+    *
+    */
+    public function edit_data_trans() {
+        p_code($_POST);
+        foreach($_POST['idxakta'] as $idx ){
+            $aktatranid[$idx = $_POST['aktatranId'][$idx - 1];    
+        }
+        
+        exit;
     }
 
 }
