@@ -119,10 +119,16 @@
 		function update_alert_pic($idp_trans)
 		{
 			$c=$this->connection();
-			mysqli_query($c, "update prosestran SET ALERTPIC = 1 where PROSESTRANID = $idp_trans");
-			$get_notif=mysqli_query($c, "select * from notifikasi where PROSESTRANID = $idp_trans");
-			$getakta=mysqli_query($c, "SELECT akta.AKTADESC, transaksipra.EMPLOYEEID, transaksipra.TRANSAKSIPRAID, prosestran.* from prosestran JOIN aktatran ON prosestran.PROSESTRANID = aktatran.CURRENTPROSES JOIN akta ON akta.AKTAID = aktatran.AKTAID
-										JOIN transaksipra ON aktatran.TRANSAKSIPRAID = transaksipra.TRANSAKSIPRAID where prosestran.PROSESTRANID = $idp_trans limit 1");
+			mysqli_query($c, "update prosestran SET ALERTPIC = 1 where PROSESTRANID =". $idp_trans);
+			$get_notif=mysqli_query($c, "select * from notifikasi where PROSESTRANID =". $idp_trans);
+			$getakta=mysqli_query($c, "SELECT akta.AKTADESC, " .
+				"transaksipra.EMPLOYEEID, transaksipra.TRANSAKSIPRAID, " .
+				"prosestran.* ".
+				"from prosestran ".
+				"JOIN aktatran ON prosestran.PROSESTRANID = aktatran.CURRENTPROSES ".
+				"JOIN akta ON akta.AKTAID = aktatran.AKTAID" .
+				"JOIN transaksipra ON aktatran.TRANSAKSIPRAID = transaksipra.TRANSAKSIPRAID" . 
+				"WHERE prosestran.PROSESTRANID = ".$idp_trans." limit 1");
 				$get_nama_akta=null;
 				$tgl_akhir=null;
 				$employe = null;
@@ -141,9 +147,9 @@
 
 			if($id_notif==null){
 				mysqli_query($c, "INSERT INTO `notifikasi` (`TIPE`, `MESSAGE1`, `MESSAGE2`, `EMPLOYEEID`, `LINK`, `PROSESTRANID`) 
-							VALUES(2, 'Alert : $get_nama_akta', 'deadline: $tgl_akhir', $employe, 'proses/detail_pasca_realisasi/$transaksipraid', $idp_trans)");
+							VALUES(2, 'Alert : ".$get_nama_akta."', 'deadline: ".$tgl_akhir."', ".$employe.", 'proses/detail_pasca_realisasi/".$transaksipraid."', ".$idp_trans.")");
 			} else {
-				mysqli_query($c, "UPDATE notifikasi SET STATUS = 0 where NOTIFIKASIID = $id_notif");
+				mysqli_query($c, "UPDATE notifikasi SET STATUS = 0 where NOTIFIKASIID = ".$id_notif);
 			}
 			mysqli_close($c);
 		}

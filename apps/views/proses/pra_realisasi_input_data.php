@@ -334,66 +334,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="akta">
-                                                                        <div id="fieldAkta1" class="cloneAkta">
-                                                                            <div class="row-form">
-                                                                                <div class="span2">Jenis Akta:</div>
-                                                                                <div class="span4">
-                                                                                    <select class="select" name="akta[]" style="width:100%">
-                                                                                        <option value="0">choose a option...</option>
-                                                                                        <?php foreach ($akta as $row):
-                                                                                            ?>
-                                                                                            <option value="<?= $row->AKTAID ?>"><?= $row->AKTADESC ?></option>
-                                                                                            <?php
-                                                                                        endforeach;
-                                                                                        ?>
-                                                                                    </select> </div>
-                                                                            </div>
-                                                                            <!-- input hidden buat ngambil Id Aktatran -->
-                                                                            <?php $aktatranId = $aktatranId['AKTATRANID'] + 1; ?>
-                                                                            <input type="hidden" value="<?php echo $aktatranId; ?>" class="cloneAktaTran" id="aktatran1" name="aktatranId[]" />
-                                                                            <div class="row-form">
-                                                                                <div class="span2">Nomor Akta:</div>
-                                                                                <div class="span4">
-                                                                                    <input type="text" id="noTran" name="noAkta[]">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="row-form">
-                                                                                <div class="span2">Tanggal Akta:</div>
-                                                                                <div class="span4">
-                                                                                    <input type="text" value="" name="tgl_akta[]" class="dp1" /></div>
-                                                                            </div>
-                                                                            <div class="row-form">
-                                                                                <div class="span2">Notaris akta:</div>
-                                                                                <div class="span4">
-                                                                                    <input type="text" id="noTran" name="notarisAkta[]"></div>
-                                                                            </div>
-
-                                                                            <div class="row-form">
-                                                                                <div class="span2">Objeck Hukum:</div>
-                                                                                <div class="span1">
-                                                                                    <a  class="button yellow tip jDialog_form_button" onclick="addHukum('hukum1', '1')" >
-                                                                                        <div class="icon"><span class="icon-plus-sign "></span></div>
-                                                                                    </a>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="objhukum">
-                                                                                <div id="hukum1">
-
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="row-form">
-                                                                                <div class="span2">Proses:</div>
-                                                                                <div class="span1">
-                                                                                    <a  class="button yellow tip jDialog_form_button" onclick="addProses('proses1', '1')" >
-                                                                                        <div class="icon"><span class="icon-plus-sign "></span></div>
-                                                                                    </a>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="objhukum">
-                                                                                <div id="proses1">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
+                                                                        
                                                                     </div>
                                                                     <div class="row-form">
                                                                         <div class="span2">Biaya:</div>
@@ -505,8 +446,8 @@
                 var num = $('.cloneAkta').length; // how many "duplicatable" input fields we currently have
                 var newNum = new Number(num + 1);      // the numeric ID of the new input field being added
 
-                var aktatran1 = document.getElementById("aktatran" + num).value;
-                var aktatranId = Number(+aktatran1 + 1);
+                //var aktatran1 = document.getElementById("aktatran" + num).value;
+                var aktatranId = Number(newNum + 1);
 
                 $(".akta")
                         .append("<div id='fieldAkta" + newNum + "' class='cloneAkta'>" +
@@ -612,7 +553,7 @@
                 var jangkaWaktu = document.getElementById("jangkaWaktu").value * satuan;
                 awal.setDate(awal.getDate() + jangkaWaktu);
                 var date_ = awal.getDate() < 10 ?  "0" + awal.getDate() : awal.getDate();
-                var month_ = awal.getMonth() < 10 ? "0" + awal.getMonth() : awal.getMonth();
+                var month_ = (awal.getMonth()+1) < 10 ? "0" + (awal.getMonth()+1) : (awal.getMonth()+1);
                 document.getElementById("deadlineCovernote").value = date_+"-"+month_+"-"+awal.getFullYear();
             } else {
                 alert("Tanggal Akad belum di set");

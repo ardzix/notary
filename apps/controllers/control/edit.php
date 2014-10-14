@@ -13,7 +13,7 @@ class Edit extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->helper(array('form', 'url'));
-        $this->load->model(array('m_bankrekening', 'm_developer', 'm_satuanwaktustd', 'm_aktaproses', 'm_akta', 'm_aktatran', 'm_customertrans', 'm_transaksipra', 'm_customer', 'm_covernote', 'm_bankutama', 'm_tipewilayah', 'm_prosestran', 'm_proses', 'm_statusproses'));
+        $this->load->model(array('m_bankrekening', 'm_sertifikat','m_developer', 'm_satuanwaktustd', 'm_aktaproses', 'm_akta', 'm_aktatran', 'm_customertrans', 'm_transaksipra', 'm_customer', 'm_covernote', 'm_bankutama', 'm_tipewilayah', 'm_prosestran', 'm_proses', 'm_statusproses'));
     }
 
     /* ===========================================================================
@@ -1112,12 +1112,214 @@ class Edit extends CI_Controller {
     *
     */
     public function edit_data_trans() {
-        p_code($_POST);
+        
+        $post = $_POST;
+        
+        $this->db->trans_start();
+
         foreach($_POST['idxakta'] as $idx ){
-            $aktatranid[$idx = $_POST['aktatranId'][$idx - 1];    
+            $aktatranid[$idx] = $_POST['aktatranId'][$idx - 1];    
         }
         
-        exit;
+        $customerList = split(",", $post["debitur"]);
+
+        //update transaksipra
+        $arrTransaksiPra = array(
+            "EMPLOYEEID" => $post["employeeId"],
+            "STATUSPJKID" => $post["statusPajakId"],
+            "SUPERVISOR" => $post["spv"],
+            "NOTARIS" => $post["notaris"],
+            "NOTRANSAKSI" => $post["noCovernote"],
+            "BANKREKID" => $post["bankId"]
+        );
+
+        if($post["developerId"] != 0){
+            $arrTransaksiPra["DEVELOPERID"] = $post["developerId"];
+        }
+        $this->m_transaksipra->update_transaksi($arrTransaksiPra, $post["transaksipraid"]);
+        $this->m_transaksipra->deleteCustomerRelationByTransID($post["transaksipraid"]);
+        $this->m_transaksipra->addCustomerRelation($post["transaksipraid"], $customerList);
+        //update covernote 
+        $arrCovernote = array (
+            "NOCOVERNOTE" => $post["noCovernote"],
+            "TGLAKAD" => date('Y-m-d', strtotime($post["tgl_akad"])),
+            "TGLSELESAI" => date('Y-m-d', strtotime($post["dlncovernote"]))
+        );
+        
+        $this->m_covernote->updateData($post["covernoteId"],$arrCovernote);
+
+        //update akta tran
+        //insert akta baru
+        $i = 0;
+        for($i = 0; $i < sizeof($post["aktatranId"]);$i++) {
+            $curAktaTran = $post["aktatranId"][$i];
+            if($curAktaTran != 0){
+                $dataAktaTran = array(
+                    "AKTAID" => $post["akta"][$i],
+                    "NOAKTA" => $post["noAkta"][$i],
+                    "TGLMULAI" => date('Y-m-d', strtotime($post["tgl_akta"][$i])),
+                    "NOTARISAKTA" => $post["notarisAkta"][$i]
+                    );
+                $this->m_aktatran->updateData($curAktaTran, $dataAktaTran);
+            } else {
+                $dataAktaTran = array(
+                    'AKTAID' => $post["akta"][$i],
+                    'TRANSAKSIPRAID' => $post["transaksipraid"],
+                    'CURRENTPROSES' => 1,
+                    'STATUSAKTAID' => 1,
+                    'NOAKTA' => $post["noAkta"][$i],
+                    'NOTARISAKTA' => $post["notarisAkta"][$i],
+                    'TGLMULAI' => date('Y-m-d', strtotime($post["tgl_akta"][$i]))
+                );
+                $qry = $this->model_core->insertRetId('aktatran', $dataAktaTran);
+
+                if ($qry != 0) {
+                    $aktatranid[$post["idxakta"][$i]] = $qry;
+                }
+            }
+            // $i++;
+        }
+
+        
+        //insert proses baru
+
+        //update prosestran
+        
+        for($i = 0; $i < sizeof($post["prosestranid"]);$i++) {
+            $curProsesTran = $post["prosestranid"][$i];
+
+            if($post["tglMasuk"][$i] != "") {
+                $tglmasuk = date('Y-m-d', strtotime($post["tglMasuk"][$i]));
+                $duration = $this->m_prosestran->getProcessDurationByProcessID($post["proses"][$i]);
+                $deadlineProses = date('Y-m-d', strtotime($tglmasuk."+ ".$duration." days"));
+            } else {
+                $tglmasuk = NULL; 
+                $deadlineProses = NULL;
+            }
+
+            if($post["tglKeluar"][$i] != "") {
+                $tglSelesai = date('Y-m-d', strtotime($post["tglKeluar"][$i]));    
+            } else {
+                $tglSelesai = NULL;
+            }
+
+            if($post["tglDiserahkan"][$i] != "") {
+                $tglPenyerahan = date('Y-m-d', strtotime($post["tglDiserahkan"][$i]));   
+            } else {
+                $tglPenyerahan = NULL;
+            }
+            
+            if($curProsesTran != 0){
+                $dataProsesTran = array(
+                    "NOMORURUT" => $post["noProses"][$i],
+                    "TGLMASUK" => $tglmasuk,
+                    "TGLSELESAI" => $tglSelesai,
+                    "TGLDEADLINE" => $deadlineProses,
+                    "TGLPENYERAHAN" => $tglPenyerahan,
+                    "EMPLOYEEID" => $post["pjproses"][$i],
+                    "PROSESID" => $post["proses"][$i]
+                );
+                $this->m_prosestran->updateData($curProsesTran, $dataProsesTran);
+            } else {
+                $data = array(
+                    'AKTATRANID' => $aktatranid[$post["prosesakta"][$i]],
+                    'PROSESID' => $post["proses"][$i],
+                    'USERID' => $this->session->userdata('USERID'),
+                    'STATUSPROSES' => '1',
+                    'EMPLOYEEID' => $post["pjproses"][$i],
+                    'TGLMASUK' => $tglmasuk,
+                    'TGLSELESAI' => $tglSelesai,
+                    'TGLPENYERAHAN' => $tglDiserahkan,
+                    'TGLDEADLINE' => $deadlineProses,
+                    'NOMORURUT' => $post["noProses"][$i]
+                );
+                $qry = $this->model_core->insertRetId('prosestran', $data);
+            }
+            
+            // $i++;
+        }
+        
+        //update object hukum
+
+        //insert object hukum baru
+
+        // echo sizeof($post["sertifikatid"]);
+        for($i = 0; $i < count($post["sertifikatid"]); $i++) {
+            $curObjHukum = $post["sertifikatid"][$i];
+            // echo $curObjHukum . "-". $i;
+            if($curObjHukum != 0){
+                $dataObjHukum = array(
+                    "TYPESERTIFIKATID" => $post["objHukum"][$i],
+                    "NAMAPENJUAL" => $post["penjual"][$i],
+                    "NAMAPEMILIK" => $post["atsNama"][$i],
+                    "NAMAPEMBELI" => $post["pembeli"][$i],
+                    "NOMOR" => $post["noSertifikat"][$i],
+                    "KOTA_KAB" => $post["kotaKab"][$i],
+                    "KEL_DESA" => $post["kelDesa"][$i]
+                );
+                $this->m_sertifikat->updateData( $curObjHukum, $dataObjHukum);
+            } else {
+                $dataObjHukum = array(
+                    "TYPESERTIFIKATID" => $post["objHukum"][$i],
+                    "NAMAPENJUAL" => $post["penjual"][$i],
+                    "NAMAPEMILIK" => $post["atsNama"][$i],
+                    "NAMAPEMBELI" => $post["pembeli"][$i],
+                    "NOMOR" => $post["noSertifikat"][$i],
+                    "AKTATRANID" => $aktatranid[$post["objakta"][$i]],
+                    "KOTA_KAB" => $post["kotaKab"][$i],
+                    "KEL_DESA" => $post["kelDesa"][$i]
+                );  
+                $qry = $this->model_core->insertRetId('sertifikat', $dataObjHukum);
+                // echo $qry;
+            }
+            
+            // $i++;
+        }
+
+        //delete akta
+        $deletedIdAkta = split(",",$post["deletedAkta"]);
+        foreach ($deletedIdAkta as $key) {
+            if($key != ''){
+                $this->m_aktatran->delete($key);
+            }
+        }
+
+        //delete proses
+        $deletedIdSertifikat = split(",",$post["deletedSertifikat"]);
+        foreach ($deletedIdSertifikat as $key) {
+            if($key != ''){
+                $this->m_sertifikat->delete($key);
+            }
+        }
+
+        //delete object hukum
+        $deletedIdProses = split(",",$post["deletedProses"]);        
+        foreach ($deletedIdProses as $key) {
+            if($key != ''){
+                $this->m_prosestran->delete($key);
+            }
+        }
+
+        //current proses
+        for($i = 0; $i < sizeof($post["idxAkta"]);$i++) {
+            $currentproses = $this->m_prosestran->getCurrentProses($aktatranid[$post["idxAkta"][$i]]);
+            $tgl_mulai_selesai = $this->m_prosestran->getMinMaxTgl($aktatranid[$post["idxAkta"][$i]]);
+
+            foreach ($tgl_mulai_selesai as $pc) {
+                $tglSelesaiAktatran = $pc->TGLDEADLINE;
+            }
+
+            $dataupdate = array(
+                'CURRENTPROSES' => $currentproses['PROSESTRANID'],
+                'TGLSELESAI' => $tglSelesaiAktatran
+            );
+
+            $this->m_aktatran->updateData($aktatranid[$post["idxAkta"][$i]], $dataupdate);
+        }
+        
+
+        $this->db->trans_complete();
+        redirect('proses/pasca_realisasi/monitoring_filter/'.$post["transaksipraid"]);
     }
 
 }

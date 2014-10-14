@@ -69,6 +69,11 @@ class m_aktatran extends CI_Model {
         return $hasil;
     }
 
+    function delete($aktatranid){
+        $this->db->where('AKTATRANID', $aktatranid);
+        $this->db->delete($this->table); 
+    }
+
 }
 
 ?>

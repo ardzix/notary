@@ -170,7 +170,7 @@
                                         <div class="row-form">
                                             <div class="span2">Kata Kunci:</div>
                                             <div class="span7">                                                            
-                                                <input type="text" value="" name="keyword" id="dp" class="dp1" />
+                                                <input type="text" value="" name="keyword" id="dp"/>
                                             </div>
                                             <div class="span1"><button class="btn" type="submit">Cari</button></div>
                                         </div>

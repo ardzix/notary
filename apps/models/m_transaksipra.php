@@ -92,6 +92,24 @@ class m_transaksipra extends CI_Model
                 }
                 
 	}
+
+	function update_transaksi($array_data, $TRANSAKSIPRAID){
+		$this->db->where('TRANSAKSIPRAID', $TRANSAKSIPRAID);
+		$this->db->update('transaksipra', $array_data); 
+	}
+
+	function deleteCustomerRelationByTransID($TRANSAKSIPRAID){
+		$this->db->where('TRANSAKSIPRAID', $TRANSAKSIPRAID);
+		$this->db->delete('customertrans'); 
+	}
+
+	function addCustomerRelation($TRANSAKSIPRAID, $arrayCustomer){
+		foreach ($arrayCustomer as $cust) {
+			$data = array('TRANSAKSIPRAID' => $TRANSAKSIPRAID, 
+				'CUSTOMERID' => $cust);
+			$this->db->insert('customertrans',$data);
+		}
+	}
 	
 }
 

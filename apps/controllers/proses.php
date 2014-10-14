@@ -495,13 +495,25 @@ class Proses extends CI_Controller {
 
             $this->load->view('proses/pasca_realisasi_updateproses_detail', $data);
         } elseif ($this->uri->segment(3) == 'monitoring_filter') {
-            $tgldari = date('Y-m-d', strtotime($this->input->post('tgldari')));
-            $tglke = date('Y-m-d', strtotime($this->input->post('tglke')));
-            $keyword = $this->input->post('keyword');
-
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
-            $data['monitoring'] = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
+            if($this->uri->segment(4) == null) {
+                $tgldari = date('Y-m-d', strtotime($this->input->post('tgldari')));
+                $tglke = date('Y-m-d', strtotime($this->input->post('tglke')));
+                $keyword = $this->input->post('keyword');
 
+                
+                $tmp = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
+                $transparam;
+                $i = 0;
+                foreach ($tmp as $val) {
+                    $transparam[$i] = $val->TRANSAKSIPRAID;
+                    $i++;
+                }
+                $data['monitoring'] = $this->model_core->getTransaksiById($transparam);
+            } else {
+                $data['monitoring'] = $this->model_core->getTransaksiById(array('0' => $this->uri->segment(4)));
+            }
+            
             $this->load->view('proses/pasca_realisasi_monitoring_baru', $data);
 
         } elseif ($this->uri->segment(3) == 'edit_data') {
@@ -517,6 +529,7 @@ class Proses extends CI_Controller {
 
                 foreach ($custid as $key) {
                     $data['selectedcust'][$i] = $key->CUSTOMERID;
+                    $i++;
                 }
 
                 $data['aktatrans'] = $this->m_aktatran->getDataByTransaksiPra($idtransaksi);

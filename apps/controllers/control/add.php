@@ -1582,6 +1582,8 @@ class Add extends CI_Controller {
 
     public function input_data() {
 
+        $this->db->trans_start();
+
         $userId = $this->session->userdata('USERID');
         $noCovernote = $this->input->post('noCovernote');
         $notaris = $this->input->post('notaris');
@@ -1685,6 +1687,7 @@ class Add extends CI_Controller {
             //
             $satuan_waktu = $this->m_satuanwaktustd->getDataById($sat);
             $satuan = $satuan_waktu->KONVERSI;
+            
             $totalhari = $wkt * $satuan;
             $years = floor($totalhari / (365));
             $months = floor(($totalhari - $years * 365) / 30);
@@ -1692,14 +1695,30 @@ class Add extends CI_Controller {
             $newtgl = $this->m_covernote->add_date($newtanggal, $days, $months, $years);
             $tanggalbaru = date("Y-m-d", strtotime($newtgl));
 
-            $tglKeluar = date('Y-m-d', strtotime($tglKeluar[$a]));
-            if ($tglKeluar == '1970-01-01') {
+            if($tglMasuk[$a] != "") {
+                $tglmasuk = date('Y-m-d', strtotime($tglMasuk[$a]));
+                $duration = $this->m_prosestran->getProcessDurationByProcessID($proses[$a]);
+                $deadlineProses = date('Y-m-d', strtotime($tglmasuk."+ ".$duration." days"));
+            } else {
+                $tglmasuk = NULL; 
+                $deadlineProses = NULL;
+            }
+
+            
+            if ($tglKeluar == '1970-01-01' || $tglKeluar == '31-12-1969' || $tglKeluar[$a] == '') {
                 $tglKeluar = NULL;
+            } else {
+                $tglKeluar = date('Y-m-d', strtotime($tglKeluar[$a]));    
             }
-            $tglDiserahkan = date('Y-m-d', strtotime($tglDiserahkan[$a]));
-            if ($tglDiserahkan == '1970-01-01') {
+
+            
+            if ($tglDiserahkan == '1970-01-01' || $tglDiserahkan == '31-12-1969' || $tglDiserahkan[$a] == '') {
                 $tglDiserahkan = NULL;
+            } else{
+                $tglDiserahkan = date('Y-m-d', strtotime($tglDiserahkan[$a]));
             }
+
+
 
             $data = array(
                 'AKTATRANID' => $arrayAktaId[$prosesAkta[$a]],
@@ -1707,10 +1726,10 @@ class Add extends CI_Controller {
                 'USERID' => $this->session->userdata('USERID'),
                 'STATUSPROSES' => '1',
                 'EMPLOYEEID' => $pjproses[$a],
-                'TGLMASUK' => date('Y-m-d', strtotime($tglMasuk[$a])),
+                'TGLMASUK' => $tglmasuk,
                 'TGLSELESAI' => $tglKeluar,
                 'TGLPENYERAHAN' => $tglDiserahkan,
-                'TGLDEADLINE' => $tanggalbaru,
+                'TGLDEADLINE' => $deadlineProses,
                 'NOMORURUT' => $noProses[$a]
             );
             $qry = $this->model_core->insert('prosestran', $data);
@@ -1755,6 +1774,8 @@ class Add extends CI_Controller {
 
             $this->model_core->insert('aktasertifikat', $aktasertifikat);
         }
+
+        $this->db->trans_complete();
         redirect('proses/pasca_realisasi');
     }
 

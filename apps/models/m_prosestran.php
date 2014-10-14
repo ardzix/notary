@@ -125,6 +125,18 @@ class m_prosestran extends CI_Model {
         return $hasil;
     }
 
+    
+    function getProcessDurationByProcessID($prosesId){
+        $hasil = $this->db->query('SELECT (DEFWAKTUSTD * KONVERSI) AS ret FROM proses ' .
+            'JOIN satuanwaktustd ON proses.SATWAKTUSTDID = satuanwaktustd.SATWAKTUSTDID ' .
+            'WHERE prosesid = '.$prosesId)->result();
+        return $hasil[0]->ret;
+    }
+    
+    function delete($prosestranid){
+        $this->db->where('PROSESTRANID', $prosestranid);
+        $this->db->delete($this->table); 
+    }
 }
 
 ?>
