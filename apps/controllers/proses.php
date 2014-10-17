@@ -546,6 +546,7 @@ class Proses extends CI_Controller {
                 $data['bank'] = $this->model_core->getDataSpecified('bankrekening', array('BANKREKID', 'BANKREKDESC'));
                 $data['aktatranId'] = $this->model_core->lastAktatranId();
                 $data['tipeSertifikat'] = $this->model_core->get_data('typesertifikat');
+                $data['statusproses'] = $this->model_core->get_data('statusproses');
 
                 $table = 'employee';
                 $join = array(array('jabatan', 'jabatan.JABATANID', 'employee.JABATANID'));

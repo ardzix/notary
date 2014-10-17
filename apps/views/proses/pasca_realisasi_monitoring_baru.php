@@ -197,7 +197,7 @@
                                     } else {
                                         ?>
                                         <div class="pqr">
-                                            <table class="table fTable lcnp dataTable" cellpadding="0" cellspacing="0">
+                                            <table class="table fTable lcnp dataTable" id="tableTransaksi" cellpadding="0" cellspacing="0">
                                                 <thead class="table-bordered">
                                                     <tr>
                                                         <th>Aksi</th>
@@ -458,6 +458,16 @@
     <?= $this->load->view('slice/tambal'); ?>
 </div>
 <script>
+$(document).ready(function(){
+    $('#tableTransaksi').DataTable().fnDestroy();
+
+    $('#tableTransaksi').DataTable({
+       "lengthMenu" : [[10, 25, 50, -1], [10, 25, 50, "All"]],
+       "iDisplayLength" : -1
+       // searching : false
+    });
+});
+
 function modalToogler(transaksi) {
     document.getElementById('transaksi').href = "<?= base_url() ?>control/delete/delete_transaksi/" + transaksi;
 }

@@ -1217,6 +1217,7 @@ class Edit extends CI_Controller {
                     "TGLDEADLINE" => $deadlineProses,
                     "TGLPENYERAHAN" => $tglPenyerahan,
                     "EMPLOYEEID" => $post["pjproses"][$i],
+                    "STATUSPROSES" => $post["statusproses"][$i],
                     "PROSESID" => $post["proses"][$i]
                 );
                 $this->m_prosestran->updateData($curProsesTran, $dataProsesTran);
@@ -1231,6 +1232,7 @@ class Edit extends CI_Controller {
                     'TGLSELESAI' => $tglSelesai,
                     'TGLPENYERAHAN' => $tglDiserahkan,
                     'TGLDEADLINE' => $deadlineProses,
+                    "STATUSPROSES" => $post["statusproses"][$i],
                     'NOMORURUT' => $post["noProses"][$i]
                 );
                 $qry = $this->model_core->insertRetId('prosestran', $data);
