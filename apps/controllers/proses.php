@@ -124,7 +124,7 @@ class Proses extends CI_Controller {
 
                 $this->load->view('proses/pra_realisasi_entry', $data);
             }
-        } elseif ($this->uri->segment(3) == 'validasi'){
+        } elseif ($this->uri->segment(3) == 'validasi') {
             /*
               | -------------------------------------------------------------------
               |  VALIDASI
@@ -456,7 +456,7 @@ class Proses extends CI_Controller {
 
                 $data['title'] = NOTARY_TITLE . 'Pasca Realisasi (Proses Eskalasi)';
                 $data['transakta'] = $this->model_core->get_where_result('aktatran', array('TRANSAKSIPRAID' => $this->uri->segment(5)));
-                
+
                 $this->load->view('proses/pasca_realisasi_eskalasi_proses', $data);
             } else {
                 $data['title'] = NOTARY_TITLE . 'Pasca Realisasi (Ekskalasi)';
@@ -496,12 +496,12 @@ class Proses extends CI_Controller {
             $this->load->view('proses/pasca_realisasi_updateproses_detail', $data);
         } elseif ($this->uri->segment(3) == 'monitoring_filter') {
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
-            if($this->uri->segment(4) == null) {
+            if ($this->uri->segment(4) == null) {
                 $tgldari = date('Y-m-d', strtotime($this->input->post('tgldari')));
                 $tglke = date('Y-m-d', strtotime($this->input->post('tglke')));
                 $keyword = $this->input->post('keyword');
 
-                
+
                 $tmp = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
                 $transparam;
                 $i = 0;
@@ -509,18 +509,18 @@ class Proses extends CI_Controller {
                     $transparam[$i] = $val->TRANSAKSIPRAID;
                     $i++;
                 }
+                $data['filter'] = '&tgldari=' . $tgldari . '&tglke=' . $tglke . '&keyword=' . $keyword;
                 $data['monitoring'] = $this->model_core->getTransaksiById($transparam);
             } else {
                 $data['monitoring'] = $this->model_core->getTransaksiById(array('0' => $this->uri->segment(4)));
             }
-            
-            $this->load->view('proses/pasca_realisasi_monitoring_baru', $data);
 
+            $this->load->view('proses/pasca_realisasi_monitoring_baru', $data);
         } elseif ($this->uri->segment(3) == 'edit_data') {
             $idtransaksi = $this->uri->segment(4);
             $transaksi = $this->m_transaksipra->getDataTransaksiCovernote($idtransaksi);
 
-            if(sizeof($transaksi) > 0){
+            if (sizeof($transaksi) > 0) {
 
                 //data transaksi
                 $data['trans'] = $transaksi[0];
@@ -535,7 +535,7 @@ class Proses extends CI_Controller {
                 $data['aktatrans'] = $this->m_aktatran->getDataByTransaksiPra($idtransaksi);
                 $data['sertifikat'] = $this->m_sertifikat->getSertifikatByTransaksi($idtransaksi);
                 $data['prosestran'] = $this->m_prosestran->getProsestranByTransaksi($idtransaksi);
-                
+
                 //model data
                 $data['title'] = NOTARY_TITLE . 'EDIT DATA';
                 $data['akta'] = $this->model_core->get_data('akta');
@@ -568,7 +568,38 @@ class Proses extends CI_Controller {
             } else {
                 //redirect 404
             }
+        } elseif ($this->uri->segment(3) == 'monitoring_print') {
+            $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
+            $data['monitoring'] = $this->model_core->monitoring();
+//            p_code($data['monitoring']);
+//            exit;
 
+            $this->load->view('proses/pasca_realisasi_monitoring_print', $data);
+        } elseif ($this->uri->segment(3) == 'monitoring_print_filter') {
+            $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
+
+            $optionFiltertArray = explode('&', $this->uri->segment(4));
+            $tgldariArray = explode('=', $optionFiltertArray[2]);
+            $tglkeArray = explode('=', $optionFiltertArray[3]);
+            $keywordArray = explode('=', $optionFiltertArray[4]);
+
+            $tgldari = $tgldariArray[1];
+            $tglke =  $tglkeArray[1];
+            $keyword = $keywordArray[1];
+
+
+            $tmp = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
+            $transparam;
+            $i = 0;
+            foreach ($tmp as $val) {
+                $transparam[$i] = $val->TRANSAKSIPRAID;
+                $i++;
+            }
+            $data['monitoring'] = $this->model_core->getTransaksiById($transparam);
+//            p_code($data['monitoring']);
+//            exit;
+
+            $this->load->view('proses/pasca_realisasi_monitoring_print', $data);
         } else {
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
             $data['monitoring'] = $this->model_core->monitoring();
