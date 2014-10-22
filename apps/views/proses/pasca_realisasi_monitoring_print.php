@@ -161,7 +161,7 @@
                                                                 }
                                                                 ?>
                                                             </td>
-                                                            <td>kendala</td>
+                                                            <td><?= $row->KENDALA ?></td>
 
                                                         </tr>
                                                         <?php
