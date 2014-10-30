@@ -102,8 +102,15 @@
                                         <tbody >
                                             <?php
                                             $no = 0;
-                                            $lastNamaCust='';
+                                            $lastNoCoverNote='';
                                             foreach ($monitoring as $row) {
+                                                
+                                                if($lastNoCoverNote!=$row->NOCOVERNOTE && $lastNoCoverNote!=''){
+                                                ?>
+                                                    <tr><td colspan="12"></td></tr>
+                                                <?php
+                                                }
+                                                
                                                 if ($withDone == 'false') {
                                                     if ($row->TGLSELESAI == 0000 - 00 - 00) {
                                                         $no++;
@@ -223,15 +230,24 @@
                                                             }
                                                             ?>
                                                         </td>
-                                                        <td>kendala</td>
+                                                        <td><?php if ($row->TGLSELESAI == 0000 - 00 - 00) echo $row->KENDALA; ?></td>
 
                                                     </tr>
                                                     <?php
                                                 }
+                                                
+                                                $lastNoCoverNote=$row->NOCOVERNOTE;
                                             }
                                             ?>
                                         </tbody>
                                     </table>
+                                    <?php 
+                                    $date=getdate(); 
+                                    $user=$this->model_core->get_where_array('user', array('USERID' => $this->session->userdata('USERID')));
+                                    $pegawai=$this->model_core->get_where_array('employee', array('EMPLOYEEID' => $user['EMPLOYEEID']));
+                                    ?>
+                                    <br>
+                                    <p>Bandung, <?= $date['mday'] ?>/<?= $date['mon'] ?>/<?= $date['year'] ?> - Dibuat oleh: <?= $pegawai['NAMALENGKAP'] ?></p>
                                     <?php
                                 }
                                 ?>

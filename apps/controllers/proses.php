@@ -600,6 +600,13 @@ class Proses extends CI_Controller {
 //            exit;
 
             $this->load->view('proses/pasca_realisasi_monitoring_print', $data);
+        } elseif ($this->uri->segment(3) == 'monitoring_export') {
+            $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
+            $data['monitoring'] = $this->model_core->monitoring();
+//            p_code($data['monitoring']);
+//            exit;
+
+            $this->load->view('proses/pasca_realisasi_monitoring_export_excell', $data);
         } else {
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
             $data['monitoring'] = $this->model_core->monitoring();

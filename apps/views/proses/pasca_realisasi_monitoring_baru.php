@@ -14,7 +14,7 @@
     <head>
         <?= $this->load->view('slice/header-content'); ?>
         <!-- jquery untuk handle table -->
-        <script type='text/javascript' src='<?= NOTARY_ASSETS ?>js/plugins/datatables/jquery.dataTables.min.js'></script>
+        <!--<script type='text/javascript' src='<?= NOTARY_ASSETS ?>js/plugins/datatables/jquery.dataTables.min.js'></script>-->
         <script type='text/javascript' src='<?= NOTARY_ASSETS ?>js/plugins/multiselect/jquery.multi-select.min.js'></script>
         <script type='text/javascript' src='<?= NOTARY_ASSETS ?>js/form.js'></script>
     </head>
@@ -514,6 +514,9 @@
                     <?php }else{ ?>
                         window.open('<?=base_url() ?>proses/pasca_realisasi/monitoring_print/'+'withDone='+withDone+'&paperSize='+paperSize,'_blank');
                     <?php } ?>
+                }
+                else{
+                    window.open('<?=base_url() ?>proses/pasca_realisasi/monitoring_export')
                 }
             }
         </script>

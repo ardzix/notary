@@ -1218,7 +1218,8 @@ class Edit extends CI_Controller {
                     "TGLPENYERAHAN" => $tglPenyerahan,
                     "EMPLOYEEID" => $post["pjproses"][$i],
                     "STATUSPROSES" => $post["statusproses"][$i],
-                    "PROSESID" => $post["proses"][$i]
+                    "PROSESID" => $post["proses"][$i],
+                    "KENDALA" => $post["kendala"][$i]
                 );
                 $this->m_prosestran->updateData($curProsesTran, $dataProsesTran);
             } else {
