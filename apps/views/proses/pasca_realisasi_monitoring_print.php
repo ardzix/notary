@@ -104,18 +104,19 @@
                                             $no = 0;
                                             $lastNoCoverNote='';
                                             foreach ($monitoring as $row) {
-                                                
+                                               
+                                                if ($withDone == 'false') {
+                                                    if ($row->STATUSPROSES == 2) {
+                                                        $no++;
+                                                         
                                                 if($lastNoCoverNote!=$row->NOCOVERNOTE && $lastNoCoverNote!=''){
                                                 ?>
                                                     <tr><td colspan="12"></td></tr>
                                                 <?php
                                                 }
                                                 
-                                                if ($withDone == 'false') {
-                                                    if ($row->TGLSELESAI == 0000 - 00 - 00) {
-                                                        $no++;
                                                         ?>
-                                                        <tr <?php if ($row->TGLSELESAI != 0000 - 00 - 00) { ?>style="background-color: #FFD700"<?php } ?>>
+                                                        <tr <?php if ($row->STATUSPROSES != 2) { ?>style="background-color: #FFD700"<?php } ?>>
                                                             <td align="center"><?= $no ?></td>
                                                             <td align="center">
                                                                 <?php
@@ -136,8 +137,14 @@
                                                                 };
                                                                 ?>
                                                             </td>
-                                                            <td align="center"><?= $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'NOMOR'); ?></td>
-                                                            <td><?= $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'NAMAPEMILIK'); ?></td>
+                                                            <td align="center"><?= $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'NOMOR'); ?> - <?= $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KEL_DESA'); ?></td>
+                                                            <td align="center"><?php
+                                                                if ($row->DEVELOPERID == NULL) {
+                                                                    echo '';
+                                                                } else {
+                                                                    echo $this->model_translate->dynamicTranslate('developer', 'DEVELOPERID', $row->DEVELOPERID, 'DEVELOPERDESC');
+                                                                }
+                                                                ?></td>
                                                             <td align="center"><?= $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KOTA_KAB'); ?></td>
                                                             <td align="center"><?= $this->model_translate->dynamicTranslate('bankrekening', 'BANKREKID', $row->BANKREKID, 'BANKREKDESC'); ?></td>
                                                             <td align="center"><?= $this->model_translate->dynamicTranslate('proses', 'PROSESID', $row->PROSESID, 'PROSESDESC'); ?></td>
@@ -176,8 +183,16 @@
                                                 } else {
 
                                                     $no++;
+                                                    
+                                                     
+                                                if($lastNoCoverNote!=$row->NOCOVERNOTE && $lastNoCoverNote!=''){
+                                                ?>
+                                                    <tr><td colspan="12"></td></tr>
+                                                <?php
+                                                }
+                                                
                                                     ?>
-                                                    <tr <?php if ($row->TGLSELESAI != 0000 - 00 - 00) { ?>style="background-color: #FFD700"<?php } ?>>
+                                                    <tr <?php if ($row->STATUSPROSES != 2) { ?>style="background-color: #FFD700"<?php } ?>>
                                                         <td align="center"><?= $no ?></td>
                                                         <td align="center">
                                                             <?php
@@ -230,7 +245,7 @@
                                                             }
                                                             ?>
                                                         </td>
-                                                        <td><?php if ($row->TGLSELESAI == 0000 - 00 - 00) echo $row->KENDALA; ?></td>
+                                                        <td><?php if ($row->STATUSPROSES == 2) echo $row->KENDALA; ?></td>
 
                                                     </tr>
                                                     <?php

@@ -367,7 +367,8 @@ class Model_core extends CI_Model {
                 . 'JOIN aktatran ON aktatran.TRANSAKSIPRAID=transaksipra.TRANSAKSIPRAID '
                 . 'LEFT JOIN prosestran ON prosestran.AKTATRANID=aktatran.AKTATRANID '
                 . 'LEFT JOIN aktasertifikat ON aktasertifikat.AKTATRANID=aktatran.AKTATRANID '
-                . 'ORDER BY TANGGALPRA DESC');
+                . 'ORDER BY TANGGALPRA DESC '
+                . 'LIMIT 100');
 
         return $qry->result();
     }

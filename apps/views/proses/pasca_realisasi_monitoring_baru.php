@@ -516,7 +516,11 @@
                     <?php } ?>
                 }
                 else{
-                    window.open('<?=base_url() ?>proses/pasca_realisasi/monitoring_export')
+                    <?php if($this->uri->segment(3)=="monitoring_filter"){ ?>
+                        window.open('<?=base_url() ?>proses/pasca_realisasi/monitoring_export_filter/'+'withDone='+withDone+'&paperSize='+paperSize+'<?= $filter ?>','_blank');
+                    <?php }else{ ?>
+                        window.open('<?=base_url() ?>proses/pasca_realisasi/monitoring_export/'+'withDone='+withDone+'&paperSize='+paperSize,'_blank');
+                    <?php } ?>
                 }
             }
         </script>

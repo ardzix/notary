@@ -189,6 +189,12 @@ if(!function_exists('print_proses')) {
                             "<input type='text' name='tglDiserahkan[]' class='dp1' value='".convert_date($row->TGLPENYERAHAN)."' />" .
                         "</div>" .
                     "</div>" .
+                    "<div class='row-form'>" .
+                        "<div class='span3'>Kendala:</div>" .
+                        "<div class='span4'>" .
+                            "<input type='text' name='kendala[]' value='".$row->KENDALA."' />" .
+                        "</div>" .
+                    "</div>" .
                     "<hr></hr>" .
                 "</div>";
             }

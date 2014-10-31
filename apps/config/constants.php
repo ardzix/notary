@@ -26,7 +26,7 @@ define('DIR_WRITE_MODE', 0777);
 | Konstanta yang digunakan untuk notarysoft
 |
 */
-define('NOTARY_ASSETS', 'http://' . $_SERVER['HTTP_HOST'] . '/notary/assets/');
+define('NOTARY_ASSETS', 'http://' . $_SERVER['HTTP_HOST'] . '/notarysoft/assets/');
 define('NOTARY_TITLE', 'NOTARY - ');
 
 /*

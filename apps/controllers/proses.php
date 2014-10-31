@@ -600,6 +600,31 @@ class Proses extends CI_Controller {
 //            exit;
 
             $this->load->view('proses/pasca_realisasi_monitoring_print', $data);
+        }elseif ($this->uri->segment(3) == 'monitoring_export_filter') {
+            $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
+
+            $optionFiltertArray = explode('&', $this->uri->segment(4));
+            $tgldariArray = explode('=', $optionFiltertArray[2]);
+            $tglkeArray = explode('=', $optionFiltertArray[3]);
+            $keywordArray = explode('=', $optionFiltertArray[4]);
+
+            $tgldari = $tgldariArray[1];
+            $tglke =  $tglkeArray[1];
+            $keyword = $keywordArray[1];
+
+
+            $tmp = $this->model_core->monitoring_filter($tgldari, $tglke, $keyword);
+            $transparam;
+            $i = 0;
+            foreach ($tmp as $val) {
+                $transparam[$i] = $val->TRANSAKSIPRAID;
+                $i++;
+            }
+            $data['monitoring'] = $this->model_core->getTransaksiById($transparam);
+//            p_code($data['monitoring']);
+//            exit;
+
+            $this->load->view('proses/pasca_realisasi_monitoring_export_excell', $data);
         } elseif ($this->uri->segment(3) == 'monitoring_export') {
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
             $data['monitoring'] = $this->model_core->monitoring();
