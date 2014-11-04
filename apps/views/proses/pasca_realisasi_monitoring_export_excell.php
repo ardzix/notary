@@ -1,5 +1,4 @@
 <?php
-
 /**
  * PHPExcel
  *
@@ -90,70 +89,233 @@ $objPHPExcel->setActiveSheetIndex(0)
 $no = 0;
 $excellRow = 6;
 $lastNoCoverNote = '';
+$boldBorder = array();
+$doneArray = array();
 foreach ($monitoring as $row) {
 
-//    if ($withDone == 'false') {
-//        if ($row->STATUSPROSES == 2) {
-    $no++;
+    if ($withDone == 'false') {
+        if ($row->STATUSPROSES != 2) {
+            $no++;
 
-//            if ($lastNoCoverNote != $row->NOCOVERNOTE && $lastNoCoverNote != '')
-//                $excellRow++;
+            if ($lastNoCoverNote != $row->NOCOVERNOTE && $lastNoCoverNote != '') {
+                array_push($boldBorder, $excellRow - 1);
+            }
 
 
-    if ($row->TGLAKAD != 0000 - 00 - 00) {
-        $tglAkad = date('d-m-Y', strtotime($row->TGLAKAD));
+            if ($row->TGLAKAD != 0000 - 00 - 00) {
+                $tglAkad = date('d-m-Y', strtotime($row->TGLAKAD));
+            } else {
+                $tglAkad = "-";
+            }
+
+            $dat = $this->m_customertrans->getCustIdFromTransId($row->TRANSAKSIPRAID);
+            $transaksiPraId = '';
+            foreach ($dat as $dt) {
+                $cs = $this->m_customer->getDataById($dt->CUSTOMERID);
+                $transaksiPraId = $transaksiPraId . $cs->NAMACUST . ', ';
+            };
+
+            if ($row->DEVELOPERID == NULL) {
+                $developer = '';
+            } else {
+                $developer = $this->model_translate->dynamicTranslate('developer', 'DEVELOPERID', $row->DEVELOPERID, 'DEVELOPERDESC');
+            }
+
+            if ($row->TGLMASUK != 0000 - 00 - 00) {
+                $tglMasuk = date('d-m-Y', strtotime($row->TGLMASUK));
+            } else {
+                $tglMasuk = "-";
+            }
+
+            if ($row->TGLSELESAI != 0000 - 00 - 00) {
+                $tglSelesai = date('d-m-Y', strtotime($row->TGLSELESAI));
+            } else {
+                $tglSelesai = "-";
+            }
+
+            if ($row->TGLPENYERAHAN != 0000 - 00 - 00) {
+                $tglPenyerahan = date('d-m-Y', strtotime($row->TGLPENYERAHAN));
+            } else {
+                $tglPenyerahan = "-";
+            }
+
+            $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A' . $excellRow, $no)
+                    ->setCellValue('B' . $excellRow, $tglAkad)
+                    ->setCellValue('C' . $excellRow, $transaksiPraId)
+                    ->setCellValue('D' . $excellRow, $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'NOMOR') . ' - ' . $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KEL_DESA'))
+                    ->setCellValue('E' . $excellRow, $developer)
+                    ->setCellValue('F' . $excellRow, $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KOTA_KAB'))
+                    ->setCellValue('G' . $excellRow, $this->model_translate->dynamicTranslate('bankrekening', 'BANKREKID', $row->BANKREKID, 'BANKREKDESC'))
+                    ->setCellValue('H' . $excellRow, $this->model_translate->dynamicTranslate('proses', 'PROSESID', $row->PROSESID, 'PROSESDESC'))
+                    ->setCellValue('I' . $excellRow, $tglMasuk)
+                    ->setCellValue('J' . $excellRow, $tglSelesai)
+                    ->setCellValue('K' . $excellRow, $tglPenyerahan)
+                    ->setCellValue('L' . $excellRow, $row->KENDALA);
+            $excellRow++;
+            $lastNoCoverNote = $row->NOCOVERNOTE;
+        }
     } else {
-        $tglAkad = "-";
+        $no++;
+
+        if ($row->STATUSPROSES == 2) {
+            array_push($doneArray, $excellRow);
+        }
+
+        if ($lastNoCoverNote != $row->NOCOVERNOTE && $lastNoCoverNote != '') {
+            array_push($boldBorder, $excellRow - 1);
+        }
+
+
+        if ($row->TGLAKAD != 0000 - 00 - 00) {
+            $tglAkad = date('d-m-Y', strtotime($row->TGLAKAD));
+        } else {
+            $tglAkad = "-";
+        }
+
+        $dat = $this->m_customertrans->getCustIdFromTransId($row->TRANSAKSIPRAID);
+        $transaksiPraId = '';
+        foreach ($dat as $dt) {
+            $cs = $this->m_customer->getDataById($dt->CUSTOMERID);
+            $transaksiPraId = $transaksiPraId . $cs->NAMACUST . ', ';
+        };
+
+        if ($row->DEVELOPERID == NULL) {
+            $developer = '';
+        } else {
+            $developer = $this->model_translate->dynamicTranslate('developer', 'DEVELOPERID', $row->DEVELOPERID, 'DEVELOPERDESC');
+        }
+
+        if ($row->TGLMASUK != 0000 - 00 - 00) {
+            $tglMasuk = date('d-m-Y', strtotime($row->TGLMASUK));
+        } else {
+            $tglMasuk = "-";
+        }
+
+        if ($row->TGLSELESAI != 0000 - 00 - 00) {
+            $tglSelesai = date('d-m-Y', strtotime($row->TGLSELESAI));
+        } else {
+            $tglSelesai = "-";
+        }
+
+        if ($row->TGLPENYERAHAN != 0000 - 00 - 00) {
+            $tglPenyerahan = date('d-m-Y', strtotime($row->TGLPENYERAHAN));
+        } else {
+            $tglPenyerahan = "-";
+        }
+
+        $objPHPExcel->setActiveSheetIndex(0)
+                ->setCellValue('A' . $excellRow, $no)
+                ->setCellValue('B' . $excellRow, $tglAkad)
+                ->setCellValue('C' . $excellRow, $transaksiPraId)
+                ->setCellValue('D' . $excellRow, $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'NOMOR') . ' - ' . $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KEL_DESA'))
+                ->setCellValue('E' . $excellRow, $developer)
+                ->setCellValue('F' . $excellRow, $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KOTA_KAB'))
+                ->setCellValue('G' . $excellRow, $this->model_translate->dynamicTranslate('bankrekening', 'BANKREKID', $row->BANKREKID, 'BANKREKDESC'))
+                ->setCellValue('H' . $excellRow, $this->model_translate->dynamicTranslate('proses', 'PROSESID', $row->PROSESID, 'PROSESDESC'))
+                ->setCellValue('I' . $excellRow, $tglMasuk)
+                ->setCellValue('J' . $excellRow, $tglSelesai)
+                ->setCellValue('K' . $excellRow, $tglPenyerahan)
+                ->setCellValue('L' . $excellRow, $row->KENDALA);
+        $excellRow++;
+        $lastNoCoverNote = $row->NOCOVERNOTE;
     }
-
-    $dat = $this->m_customertrans->getCustIdFromTransId($row->TRANSAKSIPRAID);
-    $transaksiPraId = '';
-    foreach ($dat as $dt) {
-        $cs = $this->m_customer->getDataById($dt->CUSTOMERID);
-        $transaksiPraId = $transaksiPraId . $cs->NAMACUST . ', ';
-    };
-
-    if ($row->DEVELOPERID == NULL) {
-        $developer = '';
-    } else {
-        $developer = $this->model_translate->dynamicTranslate('developer', 'DEVELOPERID', $row->DEVELOPERID, 'DEVELOPERDESC');
-    }
-
-    if ($row->TGLMASUK != 0000 - 00 - 00) {
-        $tglMasuk = date('d-m-Y', strtotime($row->TGLMASUK));
-    } else {
-        $tglMasuk = "-";
-    }
-
-    if ($row->TGLSELESAI != 0000 - 00 - 00) {
-        $tglSelesai = date('d-m-Y', strtotime($row->TGLSELESAI));
-    } else {
-        $tglSelesai = "-";
-    }
-
-    if ($row->TGLPENYERAHAN != 0000 - 00 - 00) {
-        $tglPenyerahan = date('d-m-Y', strtotime($row->TGLPENYERAHAN));
-    } else {
-        $tglPenyerahan = "-";
-    }
-
-    $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('A' . $excellRow, $no)
-            ->setCellValue('B' . $excellRow, $tglAkad)
-            ->setCellValue('C' . $excellRow, $transaksiPraId)
-            ->setCellValue('D' . $excellRow, $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'NOMOR') . ' - ' . $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KEL_DESA'))
-            ->setCellValue('E' . $excellRow, $developer)
-            ->setCellValue('F' . $excellRow, $this->model_translate->dynamicTranslate('sertifikat', 'SERTIFIKATID', $row->SERTIFIKATID, 'KOTA_KAB'))
-            ->setCellValue('G' . $excellRow, $this->model_translate->dynamicTranslate('bankrekening', 'BANKREKID', $row->BANKREKID, 'BANKREKDESC'))
-            ->setCellValue('H' . $excellRow, $this->model_translate->dynamicTranslate('proses', 'PROSESID', $row->PROSESID, 'PROSESDESC'))
-            ->setCellValue('I' . $excellRow, $tglMasuk)
-            ->setCellValue('J' . $excellRow, $tglSelesai)
-            ->setCellValue('K' . $excellRow, $tglPenyerahan)
-            ->setCellValue('L' . $excellRow, $row->KENDALA);
-//        }
-    $excellRow++;
 }
-//}
+
+$date = getdate();
+$user = $this->model_core->get_where_array('user', array('USERID' => $this->session->userdata('USERID')));
+$pegawai = $this->model_core->get_where_array('employee', array('EMPLOYEEID' => $user['EMPLOYEEID']));
+
+
+
+$objPHPExcel->setActiveSheetIndex(0)
+        ->setCellValue('A'.$excellRow, 'Bandung, '.$date['mday'].'/'. $date['mon'] .'/'. $date['year'] .' - Dibuat oleh: '. $pegawai['NAMALENGKAP']);
+
+//
+//Styling
+
+$columnIndex = array(0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L');
+
+for ($i = 0; $i < 12; $i++) {
+$objPHPExcel->getActiveSheet()->getStyle($columnIndex[$i] . '5:' . $columnIndex[$i] . '5')->applyFromArray(
+array(
+'borders' => array(
+'right' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN)
+)
+)
+);
+}
+
+$objPHPExcel->getActiveSheet()->getStyle('A5:L5')->applyFromArray(
+array(
+'borders' => array(
+'right' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM),
+'left' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM),
+'bottom' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM),
+'top' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM)
+)
+)
+);
+
+for ($i = 6; $i < $excellRow; $i++) {
+
+for ($j = 0; $j < 12; $j++) {
+$objPHPExcel->getActiveSheet()->getStyle($columnIndex[$j] . $i . ':' . $columnIndex[$j] . $i)->applyFromArray(
+array(
+'borders' => array(
+'right' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
+'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN)
+)
+)
+);
+}
+
+
+$objPHPExcel->getActiveSheet()->getStyle('A' . $i . ':L' . $i)->applyFromArray(
+array(
+'borders' => array(
+'right' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM),
+'left' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM)
+)
+)
+);
+}
+
+for ($i = 0; $i < count($boldBorder); $i++) {
+$objPHPExcel->getActiveSheet()->getStyle('A' . $boldBorder[$i] . ':L' . $boldBorder[$i])->applyFromArray(
+array(
+//                'fill' => array(
+//                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+//                    'color' => array('argb' => 'FFCCFFCC')
+//                ),
+'borders' => array(
+'bottom' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM)
+)
+)
+);
+}
+
+for ($i = 0; $i < count($doneArray); $i++) {
+$objPHPExcel->getActiveSheet()->getStyle('A' . $doneArray[$i] . ':L' . $doneArray[$i])->applyFromArray(
+array(
+'fill' => array(
+'type' => PHPExcel_Style_Fill::FILL_SOLID,
+'color' => array('argb' => 'FFFFFF00')
+)
+)
+);
+}
+
+//$objPHPExcel->getActiveSheet()->getStyle('C5:R95')->applyFromArray(
+//        array('fill' => array(
+//                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+//                'color' => array('argb' => 'FFFFFF00')
+//            ),
+//        )
+//);
 // Rename worksheet
 $objPHPExcel->getActiveSheet()->setTitle('Pasca Realisasi Export');
 

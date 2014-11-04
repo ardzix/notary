@@ -106,7 +106,7 @@
                                             foreach ($monitoring as $row) {
                                                
                                                 if ($withDone == 'false') {
-                                                    if ($row->STATUSPROSES == 2) {
+                                                    if ($row->STATUSPROSES!=2) {
                                                         $no++;
                                                          
                                                 if($lastNoCoverNote!=$row->NOCOVERNOTE && $lastNoCoverNote!=''){
@@ -116,7 +116,7 @@
                                                 }
                                                 
                                                         ?>
-                                                        <tr <?php if ($row->STATUSPROSES != 2) { ?>style="background-color: #FFD700"<?php } ?>>
+                                                        <tr <?php if ($row->STATUSPROSES==2) { ?>style="background-color: #FFD700"<?php } ?>>
                                                             <td align="center"><?= $no ?></td>
                                                             <td align="center">
                                                                 <?php
@@ -192,7 +192,7 @@
                                                 }
                                                 
                                                     ?>
-                                                    <tr <?php if ($row->STATUSPROSES != 2) { ?>style="background-color: #FFD700"<?php } ?>>
+                                                    <tr <?php if ($row->STATUSPROSES==2) { ?>style="background-color: #FFD700"<?php } ?>>
                                                         <td align="center"><?= $no ?></td>
                                                         <td align="center">
                                                             <?php
@@ -245,7 +245,7 @@
                                                             }
                                                             ?>
                                                         </td>
-                                                        <td><?php if ($row->STATUSPROSES == 2) echo $row->KENDALA; ?></td>
+                                                        <td><?php if ($row->STATUSPROSES!=2) echo $row->KENDALA; ?></td>
 
                                                     </tr>
                                                     <?php
