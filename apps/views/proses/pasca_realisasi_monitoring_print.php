@@ -57,7 +57,8 @@
                     <div class="span12">
                         <b><u>Dr. RANTI FAUZA MAYANA, SH.</u><br style="line-height: 180%">
                             NOTARIS PEJABAT PEMBUAT AKTA TANAH<br style="line-height: 180%">
-                            Jl. Dr. Cipto No. 23 Bandung<br style="line-height: 220%"></b>
+                            Jl. Dr. Cipto No. 23 Bandung<br style="line-height: 180%">
+                            <?= $periode ?><br style="line-height: 220%"></b>
                     </div>
                 </div>
 

@@ -67,27 +67,28 @@ $objPHPExcel->getProperties()->setCreator("Arif Dzikrullah")
 $objPHPExcel->setActiveSheetIndex(0)
         ->setCellValue('A1', 'Dr. RANTI FAUZA MAYANA, SH.')
         ->setCellValue('A2', 'NOTARIS PEJABAT PEMBUAT AKTA TANAH')
-        ->setCellValue('A3', 'Jl. Dr. Cipto No. 23 Bandung');
+        ->setCellValue('A3', 'Jl. Dr. Cipto No. 23 Bandung')
+        ->setCellValue('A4', $periode);
 
 // Miscellaneous glyphs, UTF-8
 $objPHPExcel->setActiveSheetIndex(0)
-        ->setCellValue('A5', 'NO')
-        ->setCellValue('B5', 'TGL AKAD')
-        ->setCellValue('C5', 'NAMA DEBITUR')
-        ->setCellValue('D5', 'NO SERTIFIKAT')
-        ->setCellValue('E5', 'DEVELOPER')
-        ->setCellValue('F5', 'KOTA/KAB/NOT')
-        ->setCellValue('G5', 'BANK')
-        ->setCellValue('H5', 'PROSES')
-        ->setCellValue('I5', 'TGL MASUK PROSES')
-        ->setCellValue('J5', 'TGL SELESAI PROSES')
-        ->setCellValue('K5', 'TGL PENYERAHAN KE BANK/DEBITUR')
-        ->setCellValue('L5', 'KENDALA');
+        ->setCellValue('A6', 'NO')
+        ->setCellValue('B6', 'TGL AKAD')
+        ->setCellValue('C6', 'NAMA DEBITUR')
+        ->setCellValue('D6', 'NO SERTIFIKAT')
+        ->setCellValue('E6', 'DEVELOPER')
+        ->setCellValue('F6', 'KOTA/KAB/NOT')
+        ->setCellValue('G6', 'BANK')
+        ->setCellValue('H6', 'PROSES')
+        ->setCellValue('I6', 'TGL MASUK PROSES')
+        ->setCellValue('J6', 'TGL SELESAI PROSES')
+        ->setCellValue('K6', 'TGL PENYERAHAN KE BANK/DEBITUR')
+        ->setCellValue('L6', 'KENDALA');
 
 //Insert data
 
 $no = 0;
-$excellRow = 6;
+$excellRow = 7;
 $lastNoCoverNote = '';
 $boldBorder = array();
 $doneArray = array();
@@ -237,7 +238,7 @@ $objPHPExcel->setActiveSheetIndex(0)
 $columnIndex = array(0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L');
 
 for ($i = 0; $i < 12; $i++) {
-$objPHPExcel->getActiveSheet()->getStyle($columnIndex[$i] . '5:' . $columnIndex[$i] . '5')->applyFromArray(
+$objPHPExcel->getActiveSheet()->getStyle($columnIndex[$i] . '6:' . $columnIndex[$i] . '6')->applyFromArray(
 array(
 'borders' => array(
 'right' => array('style' => PHPExcel_Style_Border::BORDER_THIN),
@@ -247,7 +248,7 @@ array(
 );
 }
 
-$objPHPExcel->getActiveSheet()->getStyle('A5:L5')->applyFromArray(
+$objPHPExcel->getActiveSheet()->getStyle('A6:L6')->applyFromArray(
 array(
 'borders' => array(
 'right' => array('style' => PHPExcel_Style_Border::BORDER_MEDIUM),
@@ -258,7 +259,7 @@ array(
 )
 );
 
-for ($i = 6; $i < $excellRow; $i++) {
+for ($i = 7; $i < $excellRow; $i++) {
 
 for ($j = 0; $j < 12; $j++) {
 $objPHPExcel->getActiveSheet()->getStyle($columnIndex[$j] . $i . ':' . $columnIndex[$j] . $i)->applyFromArray(

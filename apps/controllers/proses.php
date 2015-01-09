@@ -571,6 +571,7 @@ class Proses extends CI_Controller {
         } elseif ($this->uri->segment(3) == 'monitoring_print') {
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
             $data['monitoring'] = $this->model_core->monitoring();
+            $data['periode'] = '100 data terbaru';
 //            p_code($data['monitoring']);
 //            exit;
 
@@ -595,6 +596,8 @@ class Proses extends CI_Controller {
                 $transparam[$i] = $val->TRANSAKSIPRAID;
                 $i++;
             }
+            
+            $data['periode']='Periode : '.date('d-m-Y', strtotime($tgldari)).' hingga '.date('d-m-Y', strtotime($tglke));
             $data['monitoring'] = $this->model_core->getTransaksiById($transparam);
 //            p_code($data['monitoring']);
 //            exit;
@@ -620,6 +623,7 @@ class Proses extends CI_Controller {
                 $transparam[$i] = $val->TRANSAKSIPRAID;
                 $i++;
             }
+            $data['periode']='Periode : '.date('d-m-Y', strtotime($tgldari)).' hingga '.date('d-m-Y', strtotime($tglke));
             $data['monitoring'] = $this->model_core->getTransaksiById($transparam);
 //            p_code($data['monitoring']);
 //            exit;
@@ -628,6 +632,7 @@ class Proses extends CI_Controller {
         } elseif ($this->uri->segment(3) == 'monitoring_export') {
             $data['title'] = NOTARY_TITLE . 'Pasca Realisasi';
             $data['monitoring'] = $this->model_core->monitoring();
+            $data['periode'] = '100 data terbaru';
 //            p_code($data['monitoring']);
 //            exit;
 
