@@ -374,6 +374,7 @@ class Model_core extends CI_Model {
     }
     
     function getTransaksiById($transaksipraid){
+//        p_code($transaksipraid);
         $strQry = 'SELECT transaksipra.TRANSAKSIPRAID, '
                 . 'NOCOVERNOTE, covernote.TGLSELESAI AS TGLSELESAI_COVERNOTE, '
                 . 'DEVELOPERID, transaksipra.BANKREKID, transaksipra.EMPLOYEEID, aktatran.AKTAID, '
@@ -395,7 +396,8 @@ class Model_core extends CI_Model {
                 . 'LEFT JOIN bankrekening ON bankrekening.BANKREKID = transaksipra.BANKREKID '
                 . 'WHERE '
                 . 'transaksipra.TRANSAKSIPRAID IN ('.implode(",",$transaksipraid).') '
-                . 'ORDER BY TANGGALPRA DESC';
+                . 'ORDER BY TANGGALPRA DESC'
+                        ;
                 $qry = $this->db->query($strQry);
         return $qry->result();
     }
@@ -411,7 +413,7 @@ class Model_core extends CI_Model {
                 . 'customertrans.CUSTOMERID, transaksipra.DEVELOPERID, transaksipra.BANKREKID, transaksipra.EMPLOYEEID, aktatran.AKTAID, '
                 . 'prosestran.PROSESID, STATUSPROSES, prosestran.TGLMASUK, prosestran.TGLDEADLINE, prosestran.KENDALA AS KENDALA, '
                 . 'aktatran.AKTATRANID, NOAKTA, TGLAKAD, NOTARISAKTA,'
-                . 'prosestran.TGLSELESAI AS TGLSELESAI, TGLPENYERAHAN, prosestran.EMPLOYEEID AS PJPROSES, SERTIFIKATID '
+                . 'prosestran.TGLSELESAI AS TGLSELESAI, TGLPENYERAHAN, prosestran.EMPLOYEEID AS PJPROSES, sertifikat.SERTIFIKATID '
                 . 'FROM transaksipra '
                 . 'JOIN covernote ON transaksipra.TRANSAKSIPRAID=covernote.TRANSAKSIPRAID '
                 . 'JOIN customertrans ON customertrans.TRANSAKSIPRAID=transaksipra.TRANSAKSIPRAID '
@@ -423,9 +425,11 @@ class Model_core extends CI_Model {
                 . 'LEFT JOIN proses ON prosestran.PROSESID = proses.PROSESID '
                 . 'LEFT JOIN kantorproses ON proses.KANTORPROSESID = kantorproses.KANTORPROSESID '
                 . 'LEFT JOIN aktasertifikat ON aktasertifikat.AKTATRANID = aktatran.AKTATRANID '
+                . 'LEFT JOIN akta AS AKTA ON akta.AKTAID = aktatran.AKTAID '
+                . 'LEFT JOIN sertifikat AS SERTIFIKAT ON sertifikat.AKTATRANID = aktatran.AKTATRANID '  
                 . 'LEFT JOIN employee AS EMPPJPROSES ON EMPPJPROSES.EMPLOYEEID = prosestran.EMPLOYEEID '
                 . 'LEFT JOIN bankrekening ON bankrekening.BANKREKID = transaksipra.BANKREKID '
-                . 'LEFT JOIN developer ON transaksipra.DEVELOPERID = developer.DEVELOPERID '
+                . 'LEFT JOIN developer AS DEVELOPER ON transaksipra.DEVELOPERID = developer.DEVELOPERID '
                 . 'WHERE '
                 . $tglAkadWhere
                 . ' ( transaksipra.TRANSAKSIPRAID LIKE "%'.$param3.'%" OR '
@@ -438,22 +442,27 @@ class Model_core extends CI_Model {
                 . 'kantorproses.kantorproses LIKE "%'.$param3.'%" OR '
                 . 'bankrekening.BANKREKDESC LIKE "%'.$param3.'%" OR '
                 . 'aktatran.NOTARISAKTA LIKE "%'.$param3.'%" OR '
-                // . 'DEVELOPERID LIKE "%'.$param3.'%" OR '
+                 . 'DEVELOPER.DEVELOPERDESC LIKE "%'.$param3.'%" OR '
                 // . 'BANKREKID LIKE "%'.$param3.'%" OR '
                 . 'transaksipra.EMPLOYEEID LIKE "%'.$param3.'%" OR '
-//                . 'AKTAID LIKE "%'.$param3.'%" OR '
+                . 'AKTA.AKTADESC LIKE "%'.$param3.'%" OR '
                // . 'PROSESID LIKE "%'.$param3.'%" OR '
                 // . 'STATUSPROSES LIKE "%'.$param3.'%" OR '
 //                . 'prosestran.TGLMASUK LIKE "%'.$param3.'%" OR '
 //                . 'prosestran.TGLDEADLINE LIKE "%'.$param3.'%" OR '
 //                . 'aktatran.AKTATRANID LIKE "%'.$param3.'%" OR '
                 . 'NOAKTA LIKE "%'.$param3.'%" OR '
-                . 'SERTIFIKATID LIKE "%'.$param3.'%" )'
+                . 'SERTIFIKAT.SERTIFIKATID LIKE "%'.$param3.'%" OR '
+                . 'SERTIFIKAT.KEL_DESA LIKE "%'.$param3.'%" OR '
+                . 'SERTIFIKAT.KOTA_KAB LIKE "%'.$param3.'%" '
+                . ')'
                 . ' GROUP BY transaksipra.TRANSAKSIPRAID';
                 $qry = $this->db->query($strQry);
         // p_code($strQry);
         // p_code($qry->result());
         //exit;
+        if($qry->result()==NULL)
+            echo '<script>alert("Data yang dicari tidak ditemukan");document.location="'.base_url ().'proses/pasca_realisasi";</script>';
         return $qry->result();
     }
     

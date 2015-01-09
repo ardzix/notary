@@ -248,7 +248,7 @@
                                                             <td><?php
                                                                 if ($row->STATUSPROSES == '1') {
                                                                     echo '<span class="label label-warning">' . $this->model_translate->dynamicTranslate('statusproses', 'STATUSPROSESID', $row->STATUSPROSES, 'STATUSDESC') . '</span>';
-                                                                } else if ($row->STATUSPROSES == '2') {
+                                                                } else if ($rJenis Aktaow->STATUSPROSES == '2') {
                                                                     echo '<span class="label label-success">' . $this->model_translate->dynamicTranslate('statusproses', 'STATUSPROSESID', $row->STATUSPROSES, 'STATUSDESC') . '</span>';
                                                                 } else if ($row->STATUSPROSES == '3') {
                                                                     echo '<span class="label label-important">' . $this->model_translate->dynamicTranslate('statusproses', 'STATUSPROSESID', $row->STATUSPROSES, 'STATUSDESC') . '</span>';
